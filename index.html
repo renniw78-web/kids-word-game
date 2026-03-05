@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kids Word Game</title>
+
+<style>
+body{
+font-family: Arial;
+text-align:center;
+background:#f4f4f4;
+}
+
+.word{
+font-size:40px;
+margin:20px;
+}
+
+.correct{
+color:green;
+}
+
+.wrong{
+color:red;
+}
+
+.progress{
+margin-top:40px;
+font-size:24px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Kids Word Game</h1>
+
+<select id="library"></select>
+
+<div class="word" id="word"></div>
+
+<input id="answer" placeholder="type letter">
+
+<div class="progress" id="progress"></div>
+
+<script>
+
+const wordBank={
+animals:["cat","dog","lion","tiger"],
+fruit:["apple","pear","banana"]
+}
+
+let words=[]
+let currentWord=""
+let blankIndex=0
+let correctCount=0
+
+function loadLibrary(){
+
+let select=document.getElementById("library")
+
+for(let key in wordBank){
+let option=document.createElement("option")
+option.text=key
+select.add(option)
+}
+
+select.onchange=startGame
+
+}
+
+function startGame(){
+
+let lib=document.getElementById("library").value
+words=[...wordBank[lib]]
+
+nextWord()
+
+}
+
+function nextWord(){
+
+currentWord=words[Math.floor(Math.random()*words.length)]
+
+blankIndex=Math.floor(Math.random()*currentWord.length)
+
+let display=currentWord.split("")
+
+display[blankIndex]="_"
+
+document.getElementById("word").innerHTML=display.join(" ")
+
+}
+
+document.getElementById("answer").addEventListener("input",function(){
+
+let letter=this.value
+
+if(letter==currentWord[blankIndex]){
+
+document.getElementById("word").className="word correct"
+
+correctCount++
+
+updateProgress()
+
+setTimeout(nextWord,500)
+
+}else{
+
+document.getElementById("word").className="word wrong"
+
+}
+
+this.value=""
+
+})
+
+function updateProgress(){
+
+let stage="🐛"
+
+if(correctCount>3)stage="🟤"
+if(correctCount>6)stage="🦋"
+
+document.getElementById("progress").innerHTML=
+"Progress: "+stage
+
+}
+
+loadLibrary()
+
+</script>
+
+</body>
+</html>
